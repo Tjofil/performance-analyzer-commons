@@ -75,6 +75,23 @@ allprojects {
 targetCompatibility = JavaVersion.VERSION_11
 sourceCompatibility = JavaVersion.VERSION_11
 
+compileJava {
+    dependsOn spotlessApply
+    JavaVersion targetVersion = JavaVersion.toVersion(targetCompatibility);
+    if (targetVersion.isJava9Compatible()) {
+        options.compilerArgs += ["--add-exports", "jdk.attach/sun.tools.attach=ALL-UNNAMED"]
+        options.compilerArgs += ["--add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED"]
+    }
+}
+
+javadoc {
+    JavaVersion targetVersion = JavaVersion.toVersion(targetCompatibility);
+    if (targetVersion.isJava9Compatible()) {
+        options.addStringOption("-add-exports", "jdk.attach/sun.tools.attach=ALL-UNNAMED")
+        options.addStringOption("-add-exports", "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED")
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'signing'
